@@ -1,0 +1,22 @@
+---
+version: '3'
+
+services:
+
+  base:
+    build: ./cnt/base
+
+  vault:
+    build: ./cnt/base
+    hostname: vault
+    volumes:
+      - "./srv/vault/config:/config"
+    command: "vault server --config /config/vault-init.conf"
+
+  cli:
+    build: ./cnt/base
+    environment:
+      - "VAULT_ADDR=http://vault:8200"
+    depends_on: 
+      - vault
+    
