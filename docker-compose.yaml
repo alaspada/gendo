@@ -2,6 +2,25 @@
 version: '3'
 
 services:
+
+  base:
+    build: ./cnt/base
+
+  vault:
+    image: vault:0.6.5
+    hostname: vault
+    volumes:
+      - "./srv/vault/config:/config"
+    command: "vault server --config /config/vault-init.conf"
+    cap_add:
+      - IPC_LOCK
+
+  cli:
+    build: ./cnt/base
+    environment:
+      - "VAULT_ADDR=http://vault:8200"
+    depends_on: 
+      - vault
     
   concourse-db:
     image: postgres:9.5
